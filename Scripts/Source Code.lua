@@ -39,7 +39,7 @@ CutscenePlayer = function()
 					Text = StandardText..Cuts[Selection].."\n1-01 is unstable!"
 				elseif Selection == 17 or Selection == 97 then
 					Text = StandardText..Cuts[Selection].."\nDoesn't really exist. Don't play."
-				elseif Selection >= 54 and Selection <= 61 and PS2 then
+				elseif (Selection == 51 or (Selection >= 54 and Selection <= 61) or (Selection >= 73 and Selection <= 76) or Selection == 78) and PS2 then
 					Text = StandardText..Cuts[Selection].."\nDoesn't exist. Don't play."
 				else
 					Text = StandardText..Cuts[Selection]
