@@ -50,7 +50,7 @@ CutscenePlayer = function()
 				if ChapterGet() ~= 2 then
 					TextPrintString("Info and Settings: ~t~", 0.1, 2)
 				else
-					TextPrintString("Author: SimonBestia\nSpecial Thanks: deadpoolXYZ", 0.1, 2)
+					TextPrintString("Author: SimonBestia\n\nSpecial Thanks:\ndeadpoolXYZ & Altamurenza", 0.1, 2)
 				end
 
 				if IsButtonPressed(0, 0) then
@@ -266,7 +266,7 @@ F_Settings = function()
 						TextPrintString("Chapter 3 Cutscenes in Winter: True\n\nToggle True/False: ~x~", 0.1, 1)
 					end
 
-					TextPrintString("Author: SimonBestia\nSpecial Thanks: deadpoolXYZ\nAltamurenza", 0.1, 2)
+					TextPrintString("Author: SimonBestia\n\nSpecial Thanks:\ndeadpoolXYZ & Altamurenza", 0.1, 2)
 
 					if IsButtonBeingPressed(8, 0) then
 						SoundPlay2D("WrongBtn")
