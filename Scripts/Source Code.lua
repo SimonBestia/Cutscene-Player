@@ -29,15 +29,19 @@ CutscenePlayer = function()
 		end
 
 		F_SetupCuts()
-		Selection = 1
 		StandardText = "Press ~x~ to play Cutscene:\n\n"
+		CreditsText = "Author: SimonBestia\n\nSpecial Thanks:\ndeadpoolXYZ & Altamurenza"
+
+		if not Selection then
+			Selection = 1
+		end
 
 		while true do
 
 			if not shared.PlayerInClothingManager then
 				if Selection == 1 and PS2 then
 					Text = StandardText..Cuts[Selection].."\n1-01 is unstable!"
-				elseif Selection == 17 or Selection == 97 then
+				elseif Selection == 2 or Selection == 4 or Selection == 14 or Selection == 16 or Selection == 17 or Selection == 73 or Selection == 92 or Selection == 97 then
 					Text = StandardText..Cuts[Selection].."\nDoesn't really exist. Don't play."
 				elseif (Selection == 51 or (Selection >= 54 and Selection <= 61) or (Selection >= 73 and Selection <= 76) or Selection == 78) and PS2 then
 					Text = StandardText..Cuts[Selection].."\nDoesn't exist. Don't play."
@@ -50,7 +54,7 @@ CutscenePlayer = function()
 				if ChapterGet() ~= 2 then
 					TextPrintString("Info and Settings: ~t~", 0.1, 2)
 				else
-					TextPrintString("Author: SimonBestia\n\nSpecial Thanks:\ndeadpoolXYZ & Altamurenza", 0.1, 2)
+					TextPrintString(CreditsText, 0.1, 2)
 				end
 
 				if IsButtonPressed(0, 0) then
@@ -64,26 +68,26 @@ CutscenePlayer = function()
 						Selection = 1
 					end
 				elseif IsButtonBeingPressed(7, 0) then
+					SoundPlay2D("RightBtn")
 					PreviousArea = AreaGetVisible()
 					X, Y, Z = PlayerGetPosXYZ()
-					if Selection >= 52 and Selection <= 81 then
-						if PlayChap3CutsInWinter then
+					if PlayChap3CutsInWinter then
+						if Selection >= 52 and Selection <= 81 then
 							PreviousChapter = ChapterGet()
 							if PreviousChapter ~= 2 then
 								ChapterSet(2)
 							end
 						end
 					end
-					SoundPlay2D("RightBtn")
 					if Selection == 20 or Selection == 40 or Selection == 119 or Selection == 122 or Selection == 123 or Selection == 124 or Selection == 125 or Selection == 126 then
 						AreaDisableCameraControlForTransition(true)
 						CameraFade(1000, 0)
 						Wait(1000)
-						if Selection == 20 or Selection == 122 and AreaGetVisible() ~= 14 then
+						if Selection == 20 or Selection == 122 and PreviousArea ~= 14 then
 							AreaTransitionXYZ(14, -502.28, 310.96, 31.41)
-						elseif Selection == 40 or Selection == 119 or Selection == 126 and AreaGetVisible() ~= 6 then
+						elseif Selection == 40 or Selection == 119 or Selection == 126 and PreviousArea ~= 6 then
 							AreaTransitionXYZ(6, -708.41, 312.53, 33.38)
-						elseif Selection == 123 or Selection == 124 or Selection == 125 and AreaGetVisible() ~= 2 then
+						elseif Selection == 123 or Selection == 124 or Selection == 125 and PreviousArea ~= 2 then
 							AreaTransitionXYZ(2, -628.28, -312.97, 0.00)
 						end
 						LoadCutscene(Cuts[Selection])
@@ -255,18 +259,21 @@ end
 
 F_Settings = function()
 
+		Chap3CSInW = "Chapter 3 Cutscenes in Winter: "
+		ToggleText = "Toggle True/False: ~x~"
+
 		if ChapterGet() ~= 2 then
 
 			while true do
 
 				if not shared.playerShopping then
 					if not PlayChap3CutsInWinter then
-						TextPrintString("Chapter 3 Cutscenes in Winter: False\n\nToggle True/False: ~x~", 0.1, 1)
+						TextPrintString(Chap3CSInW.."False\n\n"..ToggleText, 0.1, 1)
 					else
-						TextPrintString("Chapter 3 Cutscenes in Winter: True\n\nToggle True/False: ~x~", 0.1, 1)
+						TextPrintString(Chap3CSInW.."True\n\n"..ToggleText, 0.1, 1)
 					end
 
-					TextPrintString("Author: SimonBestia\n\nSpecial Thanks:\ndeadpoolXYZ & Altamurenza", 0.1, 2)
+					TextPrintString(CreditsText, 0.1, 2)
 
 					if IsButtonBeingPressed(8, 0) then
 						SoundPlay2D("WrongBtn")
