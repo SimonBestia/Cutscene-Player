@@ -267,7 +267,11 @@ end
 F_Settings = function()
 
 		Chap3CSInW = "Chapter 3 Cutscenes in Winter: "
-		ToggleMenu = "Toggle Menu: ~L1~"
+		if PS2 then
+			ToggleMenu = "Toggle Menu: ~L1~"
+		else
+			ToggleMenu = "Toggle Menu: ~L2~"
+		end
 
 		if ChapterGet() ~= 2 then
 
