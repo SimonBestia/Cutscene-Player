@@ -38,84 +38,91 @@ CutscenePlayer = function()
 
 		while true do
 
-			if not shared.PlayerInClothingManager then
-				if Selection == 1 and PS2 then
-					Text = StandardText..Cuts[Selection].."\n1-01 is unstable!"
-				elseif Selection == 2 or Selection == 4 or Selection == 14 or Selection == 16 or Selection == 17 or Selection == 73 or Selection == 92 or Selection == 97 then
-					Text = StandardText..Cuts[Selection].."\nDoesn't really exist. Don't play."
-				elseif (Selection == 51 or (Selection >= 54 and Selection <= 61) or (Selection >= 73 and Selection <= 76) or Selection == 78) and PS2 then
-					Text = StandardText..Cuts[Selection].."\nDoesn't exist. Don't play."
-				else
-					Text = StandardText..Cuts[Selection]
-				end
+			if not TextVisible then
 
-				TextPrintString(Text, 0.1, 1)
+				if not shared.PlayerInClothingManager then
+					if Selection == 1 and PS2 then
+						Text = StandardText..Cuts[Selection].."\nThis is unstable!"
+					elseif Selection == 2 or Selection == 4 or Selection == 14 or Selection == 16 or Selection == 17 or Selection == 92 or Selection == 97 or (Selection == 51 or Selection == 73 or Selection == 76 or Selection == 78 or Selection == 126 and PS2) then
+						Text = StandardText..Cuts[Selection].."\n\nIncomplete leftovers.\nDon't play."
+					elseif (Selection >= 54 and Selection <= 61 or Selection == 74 or Selection == 75) and PS2 then
+						Text = StandardText..Cuts[Selection].."\n\nDoesn't exist.\nDon't play."
+					else
+						Text = StandardText..Cuts[Selection]
+					end
 
-				if ChapterGet() ~= 2 then
+					TextPrintString(Text, 0.1, 1)
 					TextPrintString("Info and Settings: ~t~", 0.1, 2)
-				else
-					TextPrintString(CreditsText, 0.1, 2)
-				end
 
-				if IsButtonPressed(0, 0) then
-					Selection = Selection - 1
-					if Selection < 1 then
-						Selection = table.getn(Cuts)
-					end
-				elseif IsButtonPressed(1, 0) then
-					Selection = Selection + 1
-					if Selection > table.getn(Cuts) then
-						Selection = 1
-					end
-				elseif IsButtonBeingPressed(7, 0) then
-					SoundPlay2D("RightBtn")
-					PreviousArea = AreaGetVisible()
-					X, Y, Z = PlayerGetPosXYZ()
-					if PlayChap3CutsInWinter then
-						if Selection >= 52 and Selection <= 81 then
-							PreviousChapter = ChapterGet()
-							if PreviousChapter ~= 2 then
-								ChapterSet(2)
+					if IsButtonPressed(0, 0) then
+						Selection = Selection - 1
+						if Selection < 1 then
+							Selection = table.getn(Cuts)
+						end
+					elseif IsButtonPressed(1, 0) then
+						Selection = Selection + 1
+						if Selection > table.getn(Cuts) then
+							Selection = 1
+						end
+					elseif IsButtonBeingPressed(7, 0) then
+						SoundPlay2D("RightBtn")
+						PreviousArea = AreaGetVisible()
+						X, Y, Z = PlayerGetPosXYZ()
+						if PlayChap3CutsInWinter then
+							if Selection >= 52 and Selection <= 81 then
+								PreviousChapter = ChapterGet()
+								if PreviousChapter ~= 2 then
+									ChapterSet(2)
+								end
 							end
 						end
-					end
-					if Selection == 20 or Selection == 40 or Selection == 119 or Selection == 122 or Selection == 123 or Selection == 124 or Selection == 125 or Selection == 126 then
-						AreaDisableCameraControlForTransition(true)
-						CameraFade(1000, 0)
-						Wait(1000)
-						if Selection == 20 or Selection == 122 and PreviousArea ~= 14 then
-							AreaTransitionXYZ(14, -502.28, 310.96, 31.41)
-						elseif Selection == 40 or Selection == 119 or Selection == 126 and PreviousArea ~= 6 then
-							AreaTransitionXYZ(6, -708.41, 312.53, 33.38)
-						elseif Selection == 123 or Selection == 124 or Selection == 125 and PreviousArea ~= 2 then
-							AreaTransitionXYZ(2, -628.28, -312.97, 0.00)
+						if Selection == 20 or Selection == 40 or Selection == 119 or (Selection >= 122 and Selection <= 126) then
+							AreaDisableCameraControlForTransition(true)
+							CameraFade(1000, 0)
+							Wait(1000)
+							if Selection == 20 or Selection == 123 and PreviousArea ~= 14 then
+								AreaTransitionXYZ(14, -502.28, 310.96, 31.41)
+							elseif Selection == 40 or Selection == 119 or Selection == 126 and PreviousArea ~= 6 then
+								AreaTransitionXYZ(6, -708.41, 312.53, 33.38)
+							elseif Selection == 122 or Selection == 124 or Selection == 125 and PreviousArea ~= 2 then
+								AreaTransitionXYZ(2, -628.28, -312.97, 0.00)
+							end
+							LoadCutscene(Cuts[Selection])
+							CutSceneSetActionNode(Cuts[Selection])
+							LoadCutsceneSound("3-BC")
+							repeat
+							Wait(0)
+							until IsCutsceneLoaded()
+							AreaClearAllPeds()
+							StartCutscene()
+							CameraFade(1000, 1)
+							repeat
+							Wait(0)
+							until IsButtonBeingPressed(7, 0)
+							CameraFade(1000, 0)
+							Wait(1000)
+							AreaTransitionXYZ(PreviousArea, X, Y, Z)
+							StopCutscene()
+							AreaDisableCameraControlForTransition(false)
+						else
+							PlayCutsceneWithLoad(Cuts[Selection], false, false, false, false)
 						end
-						LoadCutscene(Cuts[Selection])
-						CutSceneSetActionNode(Cuts[Selection])
-						LoadCutsceneSound("3-BC")
-						repeat
-						Wait(0)
-						until IsCutsceneLoaded()
-						AreaClearAllPeds()
-						StartCutscene()
+						if PlayChap3CutsInWinter then
+							ChapterSet(PreviousChapter)
+						end
 						CameraFade(1000, 1)
-						repeat
-						Wait(0)
-						until IsButtonBeingPressed(7, 0)
-						CameraFade(1000, 0)
-						Wait(1000)
-						StopCutscene()
-						AreaDisableCameraControlForTransition(false)
-					else
-						PlayCutsceneWithLoad(Cuts[Selection], true)
+					elseif IsButtonBeingPressed(9, 0) then
+						F_Settings()
 					end
-					AreaTransitionXYZ(PreviousArea, X, Y, Z)
-					if PlayChap3CutsInWinter then
-						ChapterSet(PreviousChapter)
-					end
-					CameraFade(1000, 1)
-				elseif IsButtonBeingPressed(9, 0) then
-					F_Settings()
+				end
+
+			end
+
+			if IsButtonBeingPressed(10, 0) then
+				if TextVisible then
+					TextVisible = false
+				else
+					TextVisible = true
 				end
 			end
 
@@ -248,10 +255,10 @@ F_SetupCuts = function()
 	"6-B2",
 	"6-BB",
 	"6-BC",
+	"candidate",
 	"CS_COUNTER",
 	"FX-TEST",
 	"TEST",
-	"candidate",
 	"weedkiller"
 	}
 
@@ -260,7 +267,7 @@ end
 F_Settings = function()
 
 		Chap3CSInW = "Chapter 3 Cutscenes in Winter: "
-		ToggleText = "Toggle True/False: ~x~"
+		ToggleMenu = "Toggle Menu: ~L1~"
 
 		if ChapterGet() ~= 2 then
 
@@ -268,9 +275,9 @@ F_Settings = function()
 
 				if not shared.playerShopping then
 					if not PlayChap3CutsInWinter then
-						TextPrintString(Chap3CSInW.."False\n\n"..ToggleText, 0.1, 1)
+						TextPrintString(Chap3CSInW.."<False>\n\n".."\n\n"..ToggleMenu, 0.1, 1)
 					else
-						TextPrintString(Chap3CSInW.."True\n\n"..ToggleText, 0.1, 1)
+						TextPrintString(Chap3CSInW.."<True>\n\n".."\n\n"..ToggleMenu, 0.1, 1)
 					end
 
 					TextPrintString(CreditsText, 0.1, 2)
@@ -278,13 +285,31 @@ F_Settings = function()
 					if IsButtonBeingPressed(8, 0) then
 						SoundPlay2D("WrongBtn")
 						main()
-					elseif IsButtonBeingPressed(7, 0) then
+					elseif IsButtonBeingPressed(0, 0) or IsButtonBeingPressed(1, 0) then
 						if not PlayChap3CutsInWinter then
 							PlayChap3CutsInWinter = true
 						elseif PlayChap3CutsInWinter then
 							PlayChap3CutsInWinter = false
 						end
 					end
+				end
+
+			Wait(0)
+			end
+
+		else
+
+			while true do
+
+				if not shared.playerShopping then
+					TextPrintString(ToggleMenu, 0.1, 1)
+				end
+
+				TextPrintString(CreditsText, 0.1, 2)
+				
+				if IsButtonBeingPressed(8, 0) then
+					SoundPlay2D("WrongBtn")
+					main()
 				end
 
 			Wait(0)
