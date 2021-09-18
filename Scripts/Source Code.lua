@@ -5,8 +5,8 @@
 ]]
 
 --Settings--
-UseNoClip = true --Toggle Derpy's NoClip On/Off. Will only work if you to have a "NoClip.lur" script in your Scripts.img
-PS2 = false --Same as UseNoClip, set this to true to display info for non-working cutscenes like SE ones.
+UseNoClip = true -- Toggle Derpy's NoClip On/Off. Will only work if you to have a "NoClip.lur" script in your Scripts.img
+PS2 = false -- Same as UseNoClip, set this to true to display info for non-working cutscenes like SE ones.
 
 
 main = function()
@@ -43,7 +43,7 @@ CutscenePlayer = function()
 				if not shared.PlayerInClothingManager then
 					if Selection == 1 and PS2 then
 						Text = StandardText..Cuts[Selection].."\nThis is unstable!"
-					elseif Selection == 2 or Selection == 4 or Selection == 14 or Selection == 16 or Selection == 17 or Selection == 92 or Selection == 97 or (Selection == 51 or Selection == 73 or Selection == 76 or Selection == 78 or Selection == 126 and PS2) then
+					elseif Selection == 2 or Selection == 4 or Selection == 14 or Selection == 16 or Selection == 17 or Selection == 92 or Selection == 97 or (PS2 and (Selection == 51 or Selection == 73 or Selection == 76 or Selection == 78 or Selection == 126)) then
 						Text = StandardText..Cuts[Selection].."\n\nIncomplete leftovers.\nDon't play."
 					elseif (Selection >= 54 and Selection <= 61 or Selection == 74 or Selection == 75) and PS2 then
 						Text = StandardText..Cuts[Selection].."\n\nDoesn't exist.\nDon't play."
@@ -68,6 +68,8 @@ CutscenePlayer = function()
 						SoundPlay2D("RightBtn")
 						PreviousArea = AreaGetVisible()
 						X, Y, Z = PlayerGetPosXYZ()
+						CameraFade(1000, 0)
+						Wait(1000)
 						if PlayChap3CutsInWinter then
 							if Selection >= 52 and Selection <= 81 then
 								PreviousChapter = ChapterGet()
@@ -77,15 +79,12 @@ CutscenePlayer = function()
 							end
 						end
 						if Selection == 20 or Selection == 40 or Selection == 119 or (Selection >= 122 and Selection <= 126) then
-							AreaDisableCameraControlForTransition(true)
-							CameraFade(1000, 0)
-							Wait(1000)
 							if Selection == 20 or Selection == 123 and PreviousArea ~= 14 then
-								AreaTransitionXYZ(14, -502.28, 310.96, 31.41)
+								AreaTransitionXYZ(14, -502.28, 310.96, 31.41, true)
 							elseif Selection == 40 or Selection == 119 or Selection == 126 and PreviousArea ~= 6 then
-								AreaTransitionXYZ(6, -708.41, 312.53, 33.38)
+								AreaTransitionXYZ(6, -708.41, 312.53, 33.38, true)
 							elseif Selection == 122 or Selection == 124 or Selection == 125 and PreviousArea ~= 2 then
-								AreaTransitionXYZ(2, -628.28, -312.97, 0.00)
+								AreaTransitionXYZ(2, -628.28, -312.97, 0.00, true)
 							end
 							LoadCutscene(Cuts[Selection])
 							CutSceneSetActionNode(Cuts[Selection])
@@ -103,11 +102,10 @@ CutscenePlayer = function()
 							Wait(1000)
 							AreaTransitionXYZ(PreviousArea, X, Y, Z)
 							StopCutscene()
-							AreaDisableCameraControlForTransition(false)
 						else
 							PlayCutsceneWithLoad(Cuts[Selection], false, false, false, false)
 						end
-						if PlayChap3CutsInWinter then
+						if PlayChap3CutsInWinter and ChapterGet() ~= PreviousChapter then
 							ChapterSet(PreviousChapter)
 						end
 						CameraFade(1000, 1)
@@ -119,11 +117,7 @@ CutscenePlayer = function()
 			end
 
 			if IsButtonBeingPressed(10, 0) then
-				if TextVisible then
-					TextVisible = false
-				else
-					TextVisible = true
-				end
+				TextVisible = not TextVisible
 			end
 
 		Wait(0)
