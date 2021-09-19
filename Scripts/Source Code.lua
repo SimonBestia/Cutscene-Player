@@ -5,8 +5,9 @@
 ]]
 
 --Settings--
+--GameLang = GetLanguage() -- Needs to be commented for the mod to run on PS2, as this function doesn't exist. Language will default to English.
 UseNoClip = true -- Toggle Derpy's NoClip On/Off. Will only work if you to have a "NoClip.lur" script in your Scripts.img
-PS2 = false -- Same as UseNoClip, set this to true to display info for non-working cutscenes like SE ones.
+PS2 = true -- Same as UseNoClip, set this to true to display info for non-working cutscenes like SE ones.
 
 
 main = function()
@@ -28,9 +29,8 @@ CutscenePlayer = function()
 			LockFPS30(false)
 		end
 
+		F_SetModLanguage()
 		F_SetupCuts()
-		StandardText = "Press ~x~ to play Cutscene:\n\n"
-		CreditsText = "Author: SimonBestia\n\nSpecial Thanks:\ndeadpoolXYZ & Altamurenza"
 
 		if not Selection then
 			Selection = 1
@@ -42,17 +42,17 @@ CutscenePlayer = function()
 
 				if not shared.PlayerInClothingManager then
 					if Selection == 1 and PS2 then
-						Text = StandardText..Cuts[Selection].."\nThis is unstable!"
+						Text = StandardText.."\n\n"..Cuts[Selection].."\n\n"..UnstableText
 					elseif Selection == 2 or Selection == 4 or Selection == 14 or Selection == 16 or Selection == 17 or Selection == 92 or Selection == 97 or (PS2 and (Selection == 51 or Selection == 73 or Selection == 76 or Selection == 78 or Selection == 126)) then
-						Text = StandardText..Cuts[Selection].."\n\nIncomplete leftovers.\nDon't play."
-					elseif (Selection >= 54 and Selection <= 61 or Selection == 74 or Selection == 75) and PS2 then
-						Text = StandardText..Cuts[Selection].."\n\nDoesn't exist.\nDon't play."
+						Text = StandardText.."\n\n"..Cuts[Selection].."\n\n"..IncompleteText
+					elseif (Selection >= 54 and Selection <= 61 or Selection == 74 or Selection == 75) and PS2 or (Selection == 73 and not PS2) then
+						Text = StandardText.."\n\n"..Cuts[Selection].."\n\n"..ExistText
 					else
-						Text = StandardText..Cuts[Selection]
+						Text = StandardText.."\n\n"..Cuts[Selection]
 					end
 
 					TextPrintString(Text, 0.1, 1)
-					TextPrintString("Info and Settings: ~t~", 0.1, 2)
+					TextPrintString(SettingsInfoText.." ~t~", 0.1, 2)
 
 					if IsButtonPressed(0, 0) then
 						Selection = Selection - 1
@@ -121,6 +121,43 @@ CutscenePlayer = function()
 			end
 
 		Wait(0)
+		end
+
+end
+
+F_SetModLanguage = function()
+
+	--[[Add Other Languages:
+		Language IDs: 1 = French, 2 = German, 4 = Spanish, 5 = British (Unused), 6 = Russian, 7 = Japanese
+		 *Be as short as possible. Bully has a character limit.
+		  *Do not use accents. Bully's debug text doesn't recognise most special characters.
+		   *Do not translate code. It needs to be in English. (Text names and button IDs)
+	]]
+
+		if GameLang == 3 then	-- Italian
+			StandardText = "Premi ~x~ per guardare:"
+			CreditsText = "Autore: SimonBestia\n\nRingraziamenti Speciali:\ndeadpoolXYZ & Altamurenza"
+			UnstableText = "Questa non è stabile!"
+			IncompleteText = "Non abbastanza rimanenze.\nNon avviarla."
+			ExistText = "Non esiste.\nNon avviarla."
+			SettingsInfoText = "Info e Impostazioni:"
+			Chap3CSInW = "Scene Capitolo 3 in Inverno:"
+			ToggleMenu = "Attiva/Disattiva Menu: ~L2~"
+			ToggleMenuPS2 = "Attiva/Disattiva Menu: ~L1~"
+			FalseText = "No"
+			TrueText = "Si"
+		else	-- English
+			StandardText = "Press ~x~ to play Cutscene:"
+			CreditsText = "Author: SimonBestia\n\nSpecial Thanks:\ndeadpoolXYZ & Altamurenza"
+			UnstableText = "This is unstable!"
+			IncompleteText = "Incomplete leftovers.\nDon't play."
+			ExistText = "Doesn't exist.\nDon't play."
+			SettingsInfoText = "Info and Settings:"
+			Chap3CSInW = "Chapter 3 Cutscenes in Winter:"
+			ToggleMenu = "Toggle Menu: ~L2~"
+			ToggleMenuPS2 = "Toggle Menu: ~L1~"
+			FalseText = "False"
+			TrueText = "True"
 		end
 
 end
@@ -260,11 +297,8 @@ end
 
 F_Settings = function()
 
-		Chap3CSInW = "Chapter 3 Cutscenes in Winter: "
 		if PS2 then
-			ToggleMenu = "Toggle Menu: ~L1~"
-		else
-			ToggleMenu = "Toggle Menu: ~L2~"
+			ToggleMenu = ToggleMenuPS2
 		end
 
 		if ChapterGet() ~= 2 then
@@ -273,9 +307,9 @@ F_Settings = function()
 
 				if not shared.playerShopping then
 					if not PlayChap3CutsInWinter then
-						TextPrintString(Chap3CSInW.."<False>\n\n".."\n\n"..ToggleMenu, 0.1, 1)
+						TextPrintString(Chap3CSInW.." <"..FalseText..">\n\n".."\n\n"..ToggleMenu, 0.1, 1)
 					else
-						TextPrintString(Chap3CSInW.."<True>\n\n".."\n\n"..ToggleMenu, 0.1, 1)
+						TextPrintString(Chap3CSInW.." <"..TrueText..">\n\n".."\n\n"..ToggleMenu, 0.1, 1)
 					end
 
 					TextPrintString(CreditsText, 0.1, 2)
