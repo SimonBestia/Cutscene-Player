@@ -5,7 +5,7 @@
 ]]
 
 --Settings--
---GameLang = GetLanguage() -- Needs to be commented for the mod to run on PS2, as this function doesn't exist. Language will default to English.
+GameLang = GetLanguage() -- Needs to be commented for the mod to run on PS2, as this function doesn't exist. Language will default to English.
 UseNoClip = true -- Toggle Derpy's NoClip On/Off. Will only work if you to have a "NoClip.lur" script in your Scripts.img
 PS2 = false -- Same as UseNoClip, set this to true to display info for non-working cutscenes like SE ones.
 
