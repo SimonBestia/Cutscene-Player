@@ -54,12 +54,12 @@ CutscenePlayer = function()
 					TextPrintString(Text, 0.1, 1)
 					TextPrintString(SettingsInfoText.." ~t~", 0.1, 2)
 
-					if IsButtonPressed(0, 0) then
+					if F_IsButtonPressedWithDelayCheck(0, 0) then
 						Selection = Selection - 1
 						if Selection < 1 then
 							Selection = table.getn(Cuts)
 						end
-					elseif IsButtonPressed(1, 0) then
+					elseif F_IsButtonPressedWithDelayCheck(1, 0) then
 						Selection = Selection + 1
 						if Selection > table.getn(Cuts) then
 							Selection = 1
@@ -103,7 +103,7 @@ CutscenePlayer = function()
 							AreaTransitionXYZ(PreviousArea, X, Y, Z)
 							StopCutscene()
 						else
-							PlayCutsceneWithLoad(Cuts[Selection], false, false, false, false)
+							PlayCutsceneWithLoad(Cuts[Selection], false, false, false, false, false)
 						end
 						if PlayChap3CutsInWinter and ChapterGet() ~= PreviousChapter then
 							ChapterSet(PreviousChapter)
